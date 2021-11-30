@@ -1,39 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import swal from 'sweetalert';
 import { Navbar } from '../components/Navbar.js';
+import { CardBook } from '../components/CardBook.js';
 
 export const Home = () => {
 
-    const initialState = { user: '', book: '' }
     const [allUsers, setAllUsers] = useState([]);
     const [allBooks, setAllBooks] = useState([]);
     const [booksRented, setBooksRented] = useState([]);
     const [booksAvailable, setBooksAvailable] = useState([]);
-    const [input, setInput] = useState(initialState);
-    const [userIdState, setuserIdState] = useState({ id: '' });
-    const [show, setShow] = useState({ nane: '', data: [] });
+    const [showAllUsers, setShowAllUsers] = useState(false);
+    const [userIdState, setuserIdState] = useState(null);
+    const [userIdResult, setUserIdResult] = useState({ name: '', books: [] });
 
-    const chargeData = async () => {
-        // const users = await axios.get(`/api/users/`);
-        // setAllUsers(users.data);
-        // const books = await axios.get(`/api/books/`);
-        // setAllBooks(books.data);
-        const booksAvailable = await axios.get(`/api/books/availableBooks/`);
-        setBooksAvailable(booksAvailable.data);
-    }
-    // chargeData();
-    const handleChange = (event) => {
-        setInput({ ...input, [event.target.name]: event.target.value, });
-    }
+    useEffect(() => {
+        const chargeData = async () => {
+            const booksAvailable = await axios.get(`/api/books/availableBooks/`);
+            setBooksAvailable(booksAvailable.data);
+            const users = await axios.get(`/api/users/`);
+            setAllUsers(users.data);
+        };
+        chargeData();
+    }, []);
+
     const handleChandeUserId = (event) => {
-        let id = parseInt(event.target.value.split(':')[1].trim());
-        setuserIdState({ id })
-    }
+        if (event.target.value) {
+            let id = parseInt(event.target.value.split(':')[1]?.trim());
+            setuserIdState(id)
+        }
+    };
+
     const getUserId = async () => {
         if (userIdState) {
-            const response = await axios.get(`/api/users/${userIdState.id}/`);
-            setShow({ nane: response.data.name, Books: [...response.data.Books] })
+            const response = await axios.get(`/api/users/${userIdState}/`);
+            setuserIdState(null);
+            setUserIdResult({ name: response.data.name, books: response.data.Books });
             swal({
                 title: '¡Genial!',
                 text: `Reporte de ${response.data.name}`,
@@ -46,132 +48,137 @@ export const Home = () => {
                 text: `Debes selecionar un usuario`,
                 icon: "warning",
             });
-
         }
+    };
 
-    }
     const getAllUsers = async () => {
-        const users = await axios.get(`/api/users/`);
-        setAllUsers(users.data);
-    }
+        setShowAllUsers(true);
+        setAllBooks([]);
+        setBooksRented([]);
+    };
 
     const getAllBooks = async () => {
         const books = await axios.get(`/api/books/`);
         setAllBooks(books.data);
-    }
+        setShowAllUsers(false);
+        setBooksRented([]);
+    };
 
     const getRentedBooks = async () => {
-        const booksRented = await axios.get(`/api/books/rentedBooks/`);
-        setBooksRented(booksRented.data);
-    }
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (input.user && input.book) {
-            const userId = parseInt(input.user.split(':')[1]);
-            const bookId = parseInt(input.book.split(':')[1]);
-            const response = await axios.post(`/api/users/${userId}/book/${bookId}/`);
-            setInput(initialState);
-            swal({
-                title: "¡Listo!",
-                text: `${response.data}`,
-                icon: "success",
-            });
-        } else {
-            swal({
-                title: "¡Lo siento!",
-                text: `Debes selecionar un usuario y un libro`,
-                icon: "warning",
-            });
+        const booksRentedResponse = await axios.get(`/api/books/rentedBooks/`);
+        if (booksRentedResponse) {
+            setBooksRented(booksRentedResponse.data);
+            setShowAllUsers(false);
+            setAllBooks([]);
         }
-    }
-    console.log('home :', show)
+    };
+
     return (
         <div>
             <header>
                 <Navbar />
             </header>
-            <section>
-
+            <section className='home_buttons'>
                 <button onClick={() => getAllUsers()}>Lista Usuraios</button>
                 <button onClick={() => getAllBooks()}>Lista Libros</button>
-                <button onClick={() => getAllUsers()}>Alquilar Libros</button>
                 <button onClick={() => getRentedBooks()}>Reporte de Libros Alquilados</button>
                 <div>
-                    <label>
-                        Usuarios Registrados
-                        <input list="userId" autoComplete='off' name="userId" onChange={handleChandeUserId} />
-                    </label>
+                    <button onClick={() => getUserId()}>Ver Libros Alquilados por un usuario</button>
+                    <input
+                        list="userId"
+                        autoComplete='off'
+                        name="userId"
+                        onChange={handleChandeUserId}
+                        placeholder='Seleciona un usuario'
+                    />
                     <datalist id="userId">
                         {
                             allUsers?.map((user, key) => (
-                                <option key={`home-data-u${key}`} value={`${user.name} | id: ${user.id}`} />
+                                <option
+                                    key={`home-data-u${key}`}
+                                    value={`${user.name} | id: ${user.id}`}
+                                />
                             ))
                         }
                     </datalist>
-                    <button onClick={() => getUserId()}>Ver Libros Alquilados por un usuario</button>
                 </div>
             </section>
-            <main>
-                <br />
-                <h2>Total de libros de la biblioteca</h2>
-                {
-                    allBooks?.length ?
-                        allBooks.map((book, key) => (
-                            <p key={`home-book${key}`}>{book.name}</p>
-                        ))
-                        : null
-                }
-                <br />
-                <h2>Total de usuarios disponibles</h2>
-                {
-                    allUsers?.length ?
-                        allUsers.map((user, key) => (
-                            <p key={`home-user${key}`}>{user.name}</p>
-                        ))
-                        : null
-                }
-                <br />
-                <h2>Libros Alquilados</h2>
-                {
-                    booksRented?.length ?
-                        booksRented.map((book, key) => (
-                            <p key={`home-book${key}`}>{book.name}</p>
-                        ))
-                        : null
+
+            <h1>Conoce Todos Nuestros Libros Disponibles</h1>
+            <main className='home_contaiener'>
+                {booksAvailable?.map((book, key) => (
+                    <CardBook key={`book-${key}`} book={book} />
+                ))
+
                 }
             </main>
-            <br />
-            <section>
-                <h2>Alquilar un libro</h2>
-                <p>Por favor seleciona un usuario y el libro</p>
-                <form onSubmit={handleSubmit}>
-                    <label>
-                        Usuarios Registrados
-                        <input list="users" autoComplete='off' name="user" onChange={handleChange} />
-                    </label>
-                    <datalist id="users">
-                        {
-                            allUsers?.map((user, key) => (
-                                <option key={`home-data-u${key}`} value={`${user.name} | id: ${user.id}`} />
-                            ))
-                        }
-                    </datalist>
-                    <label>
-                        Libros Disponibles
-                        <input list="books" autoComplete='off' name="book" onChange={handleChange} />
-                    </label>
-                    <datalist id="books">
-                        {
-                            booksAvailable?.map((book, key) => (
-                                <option key={`home-data-ba${key}`} value={`${book.name} | id: ${book.id}`} />
-                            ))
-                        }
-                    </datalist>
-                    <button type='submit'>Alquilar Libro</button>
-                </form>
-                <br />
-            </section>
+            {/* seccion donde estan todos los madales */}
+            <div>
+                {userIdResult?.name?.length &&
+                    <section className='home_modal'>
+                        <div>
+                            <button onClick={() => setUserIdResult({ name: '', books: [] })}>&#735;</button>
+                            <h2>Libros alquilados por {userIdResult.name}</h2>
+                            {
+                                userIdResult.books.length ?
+                                    userIdResult.books.map((book, key) => (
+                                        <li key={`home-book${key}`}>{book.name}</li>
+                                    ))
+                                    :
+                                    <p>Este Usuario <strong> NO </strong>tiene libros alquilados</p>
+                            }
+                        </div>
+                    </section>
+                }
 
+                {allBooks.length &&
+                    <section className='home_modal'>
+                        <div>
+                            <button onClick={() => setAllBooks([])}>&#735;</button>
+                            <h2>Total de libros de la biblioteca</h2>
+                            {
+                                allBooks?.length ?
+                                    allBooks.map((book, key) => (
+                                        <li key={`home-book${key}`}>{book.name}</li>
+                                    ))
+                                    : null
+                            }
+                        </div>
+                    </section>
+                }
+
+                {showAllUsers &&
+                    <section className='home_modal'>
+                        <div>
+                            <button onClick={() => setShowAllUsers(false)}>&#735;</button>
+                            <h2>Total de usuarios disponibles</h2>
+                            {
+                                allUsers?.length ?
+                                    allUsers.map((user, key) => (
+                                        <li key={`home-user${key}`}>{user.name}</li>
+                                    ))
+                                    : null
+                            }
+                        </div>
+                    </section>
+                }
+
+                {booksRented?.length &&
+                    <section className='home_modal'>
+                        <div>
+                            <button onClick={() => setBooksRented([])}>&#735;</button>
+                            <h2>Libros Alquilados</h2>
+                            {
+                                booksRented?.length ?
+                                    booksRented.map((book, key) => (
+                                        <li key={`home-book${key}`}>{book.name}</li>
+                                    ))
+                                    : null
+                            }
+                        </div>
+                    </section>
+                }
+            </div>
         </div>
     )
 }

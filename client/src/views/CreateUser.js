@@ -9,7 +9,7 @@ export const CreateUser = () => {
 
     const handleChange = (event) => {
         setInput({ ...input, [event.target.name]: event.target.value, });
-    }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -28,15 +28,22 @@ export const CreateUser = () => {
                 icon: "warning",
             });
         }
-    }
+    };
+
     return (
         <div>
             <Navbar />
-            <section>
+            <section className='create_for'>
                 <h2>Crear un nuevo Usuario</h2>
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <label>Por favor ingresa el nombre completo del nuevo usuario</label>
-                    <input type='text' name='name' value={input.name} onChange={(e) => handleChange(e)} />
+                    <input
+                        type='text'
+                        name='name'
+                        value={input.name}
+                        onChange={(e) => handleChange(e)}
+                        placeholder='Nombre completo del usuario'
+                    />
                     <input type='submit' value='Crear Usuario' />
                 </form>
             </section>

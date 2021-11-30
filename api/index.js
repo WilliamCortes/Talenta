@@ -24,7 +24,6 @@ const initialBooks = [
 
 const app = require('./src/app');
 const { conn } = require('./src/models');
-// const { conn } = require('./src/db.js');
 const { Book } = require('./src/models');
 require("dotenv").config()
 

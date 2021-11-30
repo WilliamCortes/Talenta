@@ -11,7 +11,7 @@ export const CreateBook = () => {
 
     const handleChange = (event) => {
         setInput({ ...input, [event.target.name]: event.target.value, });
-    }
+    };
 
     const uploadImage = async (e) => {
         setLoading(false)
@@ -55,15 +55,22 @@ export const CreateBook = () => {
                 icon: "warning",
             });
         }
-    }
+    };
+
     return (
         <div>
             <Navbar />
-            <section>
+            <section className='create_for'>
                 <h2>Agregar un nuevo Libro</h2>
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <label>Por favor ingresa el nombre completo del libro que deseas agregar</label>
-                    <input type='text' name='name' value={input.name} onChange={(e) => handleChange(e)} />
+                    <input
+                        type='text'
+                        name='name'
+                        value={input.name}
+                        onChange={(e) => handleChange(e)}
+                        placeholder='Nombre del libro'
+                    />
                     {loading ?
                         <>
                             {input.image.length > 3 && <img src={input?.image} alt='Imagen del libro' />}

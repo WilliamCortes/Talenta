@@ -1,18 +1,142 @@
-nav {
+.navbar {
   display: flex;
+  align-items: center;
+  justify-content: space-around;
   height: 80px;
   margin: 0;
   background-color: #002b49;
 }
-ul {
+.navbar ul {
+  display: flex;
+  align-items: center;
   list-style: none;
   height: 100%;
   margin: 0;
   padding: 0;
+
   /* margin: auto 0; */
 }
-a {
+.navbar a {
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: white;
   font-size: 18px;
+}
+
+.create_for {
+  background-color: rgba(0, 169, 224, 0.06);
+  border-radius: 10px;
+  padding: 40px 80px;
+  margin: 7% 25%;
+  box-shadow: 6px 7px 12px #242728, -20px 20px rgba(0, 169, 224, 0.06),
+    20px -20px rgba(97, 143, 158, 0.2);
+}
+
+h2 {
+  color: #10aee3;
+}
+form {
+  display: flex;
+  height: 300px;
+  justify-content: space-around;
+  flex-direction: column;
+}
+input,
+select,
+datalist {
+  height: 40px;
+  width: 95%;
+  padding-left: 20px;
+  border: none;
+  outline: none;
+  box-shadow: 8px 8px 25px 0 rgb(42 67 113 / 15%);
+  -webkit-box-shadow: 8px 8px 25px 0 rgb(42 67 113 / 15%);
+  -moz-box-shadow: 8px 8px 25px 0 rgba(42, 67, 113, 0.15);
+}
+button,
+input[type="submit"] {
+  background-color: #10aee3;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  height: 50px;
+  width: 200px;
+  border: none;
+  cursor: pointer;
+}
+button:hover,
+input[type="submit"]:hover {
+  background-color: #0d82f0;
+}
+/* estilos del home */
+h1 {
+  color: #002b49;
+  text-align: center;
+}
+
+.home_buttons {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 50px;
+}
+
+.home_buttons > div > button {
+  width: 100%;
+}
+.home_contaiener {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.card_book {
+  text-align: center;
+  width: 300px;
+  border: solid 1px white;
+  margin: 30px;
+  box-shadow: 6px 7px 12px rgba(97, 143, 158, 0.2);
+}
+.card_book h4 {
+  color: #0d82f0;
+}
+.card_book img {
+  width: 100%;
+}
+
+/* estilos de los modales */
+
+.home_modal {
+  display: flex;
+  justify-content: center;
+  background-color: rgba(250, 250, 250, 0.5);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+}
+.home_modal > div {
+  background-color: rgba(0, 169, 224, 01);
+  color: black;
+  width: 30%;
+  padding: 60px;
+  overflow: scroll;
+  margin-top: 80px;
+  box-shadow: 6px 7px 12px #242728, -20px 20px rgba(0, 169, 224, 0.06),
+    20px -20px rgba(97, 143, 158, 0.2);
+}
+.home_modal > div > h2 {
+  color: #002b49;
+}
+.home_modal > div > button {
+  background-color: transparent;
+  color: black;
+  font-size: 60px;
+  margin: -30px -100px 0 0;
+  float: right;
+}
+.home_modal > div > p {
+  color: black;
+  font-size: 17px;
+  opacity: 0.8;
 }
