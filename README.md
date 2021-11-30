@@ -96,7 +96,7 @@ En estas carpetas está el código del back-end y el front-end respectivamente.
   para verifcar si fue creada: `\l`.
 
 - Ubicado en la carpeta `api` utilizando la consola de git: `npm install`,
-  cuando termine: `npm star` con lo cual debe arrancar el servidor y ver el aviso:
+  cuando termine: ` npm start` con lo cual debe arrancar el servidor y ver el aviso:
   `Servidor corriendo en el puerto 3001`.
 
 - [ ]Nota: Por defecto funcionará en el puerto 3001, para cambiarlo
